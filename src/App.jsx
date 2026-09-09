@@ -155,10 +155,11 @@ export function App() {
 
   return (
     <div
-      className={`h-[100dvh] max-h-[100dvh] flex flex-col justify-between transition-colors duration-200 overflow-hidden ${theme === 'dark'
+      className={`h-[100dvh] max-h-[100dvh] flex flex-col justify-between transition-colors duration-200 overflow-hidden ${
+        theme === 'dark'
           ? 'bg-slate-950 text-slate-100'
-          : 'bg-white text-slate-900'
-        }`}
+          : 'bg-slate-100/70 text-slate-900'
+      }`}
     >
       {/* Hide surrounding UI when in fullscreen */}
       {!isFullscreen && (
@@ -230,11 +231,11 @@ export function App() {
         <TimerDisplay timeState={timeState} appearance={appearance} isPaused={isPaused} />
       </main>
 
-      {/* Bottom controls & Footer - hidden in fullscreen */}
+      {/* Bottom Zone: Status Bar + Actions */}
       {!isFullscreen && (
         <>
-          {/* Started Time and Targeted Time Stacked Column */}
-          <div className="flex items-center justify-center pb-1.5 z-10 flex-shrink-0 px-4">
+          {/* Started vs Targeted Time Bar (Horizontal layout on desktop) */}
+          <div className="flex items-center justify-center pb-2 z-10 flex-shrink-0 px-4">
             <SessionTimeBar
               startTime={startTime}
               targetTime={targetTime}
@@ -264,13 +265,13 @@ export function App() {
           </div>
 
           {/* Modern Compact Footer */}
-          <footer className="w-full py-1.5 text-center text-[11px] text-slate-400 dark:text-slate-500 border-t border-slate-200 dark:border-slate-800 relative z-10 flex-shrink-0">
+          <footer className="w-full py-1.5 text-center text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-300 dark:border-slate-800 relative z-10 flex-shrink-0">
             <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-1">
               <span>OMGTIMER &bull; Zero-Hour Precision & Overtime Engine</span>
               <button
                 type="button"
                 onClick={() => setIsMultiplatformOpen(true)}
-                className="hover:text-indigo-500 underline underline-offset-4 transition-colors"
+                className="hover:text-indigo-600 dark:hover:text-indigo-400 underline underline-offset-4 transition-colors font-medium"
               >
                 Deploy on Mac, Windows, iOS & Android &rarr;
               </button>

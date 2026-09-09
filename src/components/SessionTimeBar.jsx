@@ -82,12 +82,12 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
   }, [effectiveStartTime, targetTime]);
 
   return (
-    <div className="glass-panel px-3 py-1.5 rounded-md border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 shadow-xs flex flex-col gap-1.5 select-none w-full max-w-[260px] sm:max-w-[280px]">
+    <div className="px-3 py-2 rounded-md border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex flex-col gap-1.5 select-none w-full max-w-[260px] sm:max-w-[280px]">
       {/* 1. Started Time Row */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
-          <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          <Clock className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
             Started
           </span>
         </div>
@@ -99,10 +99,10 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
               type="button"
               onClick={handleSetToNow}
               onTouchEnd={handleSetToNow}
-              className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold transition-all cursor-pointer select-none flex-shrink-0 touch-manipulation active:scale-95 ${
+              className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold transition-all cursor-pointer select-none flex-shrink-0 touch-manipulation active:scale-95 ${
                 feedback
                   ? 'bg-emerald-600 text-white border border-emerald-500 shadow-xs'
-                  : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800'
+                  : 'bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-300 hover:text-indigo-700 dark:hover:text-indigo-400 border border-slate-300 dark:border-slate-700'
               }`}
               title="Set started time to exact current time (Now)"
               aria-label="Set started time to current time"
@@ -122,10 +122,10 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
           )}
 
           <span
-            className={`text-xs font-mono font-semibold truncate transition-colors ${
+            className={`text-xs font-mono font-bold truncate transition-colors ${
               feedback
-                ? 'text-emerald-600 dark:text-emerald-400 font-bold'
-                : 'text-slate-700 dark:text-slate-200'
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : 'text-slate-950 dark:text-slate-100'
             }`}
           >
             {startedString}
@@ -134,24 +134,24 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
       </div>
 
       {/* Subtle Divider */}
-      <div className="h-px bg-slate-100 dark:bg-slate-800/80 w-full" />
+      <div className="h-px bg-slate-200 dark:bg-slate-800 w-full" />
 
       {/* 2. Targeted Time Row */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
-          <Target className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
+          <Target className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400">
             Targeted
           </span>
         </div>
 
         <div className="flex items-center gap-1.5 min-w-0">
           {durationLabel && (
-            <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800/90 text-slate-500 dark:text-slate-400 border border-slate-200/80 dark:border-slate-700/60">
+            <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
               {durationLabel}
             </span>
           )}
-          <span className="text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400 truncate">
+          <span className="text-xs font-mono font-bold text-indigo-700 dark:text-indigo-400 truncate">
             {targetedString}
           </span>
         </div>

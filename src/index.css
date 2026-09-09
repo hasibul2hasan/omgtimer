@@ -4,27 +4,36 @@
 
 @layer base {
   :root {
-    --bg-primary: #ffffff;
+    --bg-primary: #f1f5f9;
     --card-bg: #ffffff;
-    --border-color: #e2e8f0;
+    --border-color: #cbd5e1;
     --text-primary: #0f172a;
-    --text-muted: #64748b;
+    --text-muted: #475569;
+    color-scheme: light;
   }
 
   .dark {
-    --bg-primary: #090d16;
-    --card-bg: #111827;
-    --border-color: #1f2937;
-    --text-primary: #f9fafb;
-    --text-muted: #9ca3af;
+    --bg-primary: #020617;
+    --card-bg: #0f172a;
+    --border-color: #1e293b;
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+    color-scheme: dark;
   }
 }
 
-/* Crisp flat card effect with minimal rounded edges */
+.dark input[type="date"],
+.dark input[type="time"],
+.dark input[type="datetime-local"] {
+  color-scheme: dark;
+}
+
+
+/* Crisp card styling with high visibility in both light and dark mode */
 .glass-panel {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
 }
 
 /* Overtime dynamic glow effects */
@@ -45,9 +54,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.4);
+  background: rgba(100, 116, 139, 0.4);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
+  background: rgba(100, 116, 139, 0.7);
 }
