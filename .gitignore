@@ -19,6 +19,12 @@ dist-ssr/
 .env.*.local
 *.local
 
+# Vercel & Deployment
+.vercel/
+
+# Vite cache & temp
+.vite/
+
 # Editor & OS files
 .vscode/*
 !.vscode/extensions.json
@@ -30,3 +36,4 @@ dist-ssr/
 *.sln
 *.sw?
 Thumbs.db
+
