@@ -28,8 +28,8 @@ export function App() {
   // Multiplatform guide modal
   const [isMultiplatformOpen, setIsMultiplatformOpen] = useState(false);
 
-  // Audio synthesizer hook
-  const { playChime, getAudioContext } = useAudioSynth();
+  // Audio synthesizer hook (~10s randomized melodic ringtones)
+  const { playRandomRingtone, playChime, stopActiveSounds, isPlaying: isPlayingRingtone, getAudioContext } = useAudioSynth();
 
   // Helper to get active fullscreen element across all browser engines
   const getFullscreenElement = () => {
@@ -117,9 +117,9 @@ export function App() {
       triggerConfettiBurst();
     }
     if (enableSound) {
-      playChime();
+      playRandomRingtone();
     }
-  }, [enableConfetti, enableSound, playChime]);
+  }, [enableConfetti, enableSound, playRandomRingtone]);
 
   // Countdown hook
   const { targetTime, setTarget, startTime, timeState, isPaused, play, pause, reset } = useCountdown({
@@ -145,8 +145,12 @@ export function App() {
   const [activeMobileDropdown, setActiveMobileDropdown] = useState(null);
 
   const handlePreviewSound = () => {
-    getAudioContext();
-    playChime();
+    if (isPlayingRingtone) {
+      stopActiveSounds();
+    } else {
+      getAudioContext();
+      playRandomRingtone();
+    }
   };
 
   return (
@@ -229,8 +233,8 @@ export function App() {
       {/* Bottom controls & Footer - hidden in fullscreen */}
       {!isFullscreen && (
         <>
-          {/* Started Time and Targeted Time Single Bar */}
-          <div className="w-full max-w-xl mx-auto px-4 pb-1.5 z-10 flex-shrink-0">
+          {/* Started Time and Targeted Time Stacked Column */}
+          <div className="flex items-center justify-center pb-1.5 z-10 flex-shrink-0 px-4">
             <SessionTimeBar
               startTime={startTime}
               targetTime={targetTime}
@@ -244,9 +248,18 @@ export function App() {
               enableConfetti={enableConfetti}
               setEnableConfetti={setEnableConfetti}
               enableSound={enableSound}
-              setEnableSound={setEnableSound}
+              setEnableSound={(val) => {
+                setEnableSound((prev) => {
+                  const nextVal = typeof val === 'function' ? val(prev) : val;
+                  if (!nextVal && isPlayingRingtone) {
+                    stopActiveSounds();
+                  }
+                  return nextVal;
+                });
+              }}
               onPreviewConfetti={handlePreviewConfetti}
               onPreviewSound={handlePreviewSound}
+              isPlayingSound={isPlayingRingtone}
             />
           </div>
 

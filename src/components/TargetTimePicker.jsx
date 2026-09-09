@@ -1,7 +1,46 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Calendar, RotateCcw, Zap, ChevronDown, ChevronUp, Clock, Play, Pause, AlertCircle } from 'lucide-react';
 
 const pad = (n, width = 2) => String(Math.floor(n)).padStart(width, '0');
+
+export function parseTimeString(inputStr, baseDate = new Date()) {
+  if (!inputStr || typeof inputStr !== 'string') return null;
+  const str = inputStr.trim().toLowerCase();
+  if (!str) return null;
+
+  const isPM = /pm|p(?!\w)/i.test(str);
+  const isAM = /am|a(?!\w)/i.test(str);
+  const hasMeridiem = isPM || isAM;
+
+  const clean = str.replace(/[^0-9:]/g, ' ').trim();
+  const parts = clean.split(/[:\s]+/).filter(Boolean).map(Number);
+
+  if (parts.length === 0) return null;
+
+  let hours = parts[0];
+  let minutes = parts.length > 1 ? parts[1] : 0;
+  let seconds = parts.length > 2 ? parts[2] : 0;
+
+  if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) return null;
+
+  if (hasMeridiem) {
+    if (hours === 12) {
+      hours = isPM ? 12 : 0;
+    } else if (isPM) {
+      hours = (hours % 12) + 12;
+    } else {
+      hours = hours % 12;
+    }
+  }
+
+  if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
+    return null;
+  }
+
+  const result = new Date(baseDate);
+  result.setHours(hours, minutes, seconds, 0);
+  return result;
+}
 
 export function TargetTimePicker({
   targetTime,
@@ -131,6 +170,80 @@ export function TargetTimePicker({
     const newDate = new Date(targetTime || Date.now());
     newDate.setFullYear(year, month - 1, day);
     onTargetChange(newDate);
+  };
+
+  const dateInputRef = useRef(null);
+
+  const handleOpenDatePicker = (e) => {
+    e?.stopPropagation?.();
+    if (dateInputRef.current) {
+      if (typeof dateInputRef.current.showPicker === 'function') {
+        try {
+          dateInputRef.current.showPicker();
+          return;
+        } catch (err) {
+          // fallback
+        }
+      }
+      dateInputRef.current.focus();
+    }
+  };
+
+  // Formatted string for desktop writing e.g. "02:30:00 PM"
+  const formattedTargetTime = useMemo(() => {
+    if (!targetTime) return '';
+    const d = new Date(targetTime);
+    return d.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+  }, [targetTime]);
+
+  const [desktopTimeText, setDesktopTimeText] = useState(formattedTargetTime);
+  const [isTypingDesktop, setIsTypingDesktop] = useState(false);
+
+  // Sync desktop text whenever targetTime changes from external sources (e.g. presets, reset)
+  useEffect(() => {
+    if (!isTypingDesktop) {
+      setDesktopTimeText(formattedTargetTime);
+    }
+  }, [formattedTargetTime, isTypingDesktop]);
+
+  // Handle typing freely on desktop
+  const handleDesktopTimeChange = (e) => {
+    const val = e.target.value;
+    setDesktopTimeText(val);
+    setIsTypingDesktop(true);
+
+    const parsed = parseTimeString(val, targetTime || new Date());
+    if (parsed) {
+      onTargetChange(parsed);
+    }
+  };
+
+  const handleDesktopTimeBlur = () => {
+    setIsTypingDesktop(false);
+    const parsed = parseTimeString(desktopTimeText, targetTime || new Date());
+    if (parsed) {
+      onTargetChange(parsed);
+      setDesktopTimeText(
+        parsed.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        })
+      );
+    } else {
+      // Restore valid formatted string if invalid
+      setDesktopTimeText(formattedTargetTime);
+    }
+  };
+
+  const handleDesktopTimeKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.currentTarget.blur();
+    }
   };
 
 
@@ -392,91 +505,107 @@ export function TargetTimePicker({
 
             {/* Combined Field Bar: displays ONLY Time on the bar + Date Selector Pill */}
             <div className="flex items-center rounded-md border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500 transition-all overflow-hidden shadow-inner">
-              {/* Only Time Field */}
+              {/* Time Field: Native on mobile, Free-form writable input on desktop */}
               <div className="relative flex-1 flex items-center min-w-0 px-2.5 py-1.5">
                 <Clock className="w-4 h-4 text-indigo-500 flex-shrink-0 mr-2" />
+
+                {/* Mobile View: Native time picker (unchanged) */}
                 <input
-                  id="target-time-input"
+                  id="target-time-input-mobile"
                   type="time"
                   step="1"
                   value={timeInputValue}
                   onChange={handleTimeChange}
-                  className="w-full bg-transparent text-slate-900 dark:text-slate-100 font-mono text-sm font-semibold focus:outline-none cursor-pointer"
-                  title="Set Target Time (Hours : Minutes : Seconds)"
+                  className="sm:hidden w-full bg-transparent text-slate-900 dark:text-slate-100 font-mono text-sm font-semibold focus:outline-none cursor-pointer"
+                  title="Set Target Time"
                   aria-label="Target Time"
+                />
+
+                {/* Desktop View: Direct writable input for desired time */}
+                <input
+                  id="target-time-input-desktop"
+                  type="text"
+                  spellCheck="false"
+                  autoComplete="off"
+                  value={desktopTimeText}
+                  onChange={handleDesktopTimeChange}
+                  onBlur={handleDesktopTimeBlur}
+                  onKeyDown={handleDesktopTimeKeyDown}
+                  placeholder="e.g. 2:30 PM or 14:30"
+                  className="hidden sm:block w-full bg-transparent text-slate-900 dark:text-slate-100 font-mono text-sm font-semibold focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                  title="Type your desire time (e.g. 2:30 PM, 14:30, 9am, 10:00:00) and press Enter"
+                  aria-label="Write Target Time"
                 />
               </div>
 
-              {/* Date Button with hidden native date picker */}
-              <div className="relative border-l border-slate-200 dark:border-slate-800 flex-shrink-0">
+              {/* Date Button with native date picker */}
+              <div
+                onClick={handleOpenDatePicker}
+                className="relative border-l border-slate-200 dark:border-slate-800 flex-shrink-0 cursor-pointer"
+              >
                 <div className="flex items-center gap-1.5 px-2.5 py-2 bg-slate-100/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors select-none">
                   <Calendar className="w-3.5 h-3.5 text-indigo-500" />
                   <span>{dateLabel}</span>
                   <ChevronDown className="w-3 h-3 text-slate-400" />
                 </div>
                 <input
+                  ref={dateInputRef}
                   type="date"
                   value={dateInputValue}
                   onChange={handleDateChange}
+                  onClick={(e) => {
+                    if (typeof e.currentTarget.showPicker === 'function') {
+                      try {
+                        e.currentTarget.showPicker();
+                      } catch (err) {
+                        // ignore
+                      }
+                    }
+                  }}
                   className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
                   title="Click to choose custom date"
                   aria-label="Choose Target Date"
                 />
               </div>
             </div>
+
+            {/* Desktop Helper Hint */}
+            <div className="hidden sm:flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 px-0.5">
+              <span>Write time (e.g. 2:30 PM, 14:30)</span>
+              <span>↵ Enter to apply</span>
+            </div>
           </div>
 
           {/* Quick presets */}
+          {/* Quick presets from now */}
           <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
               Quick Presets from Now:
             </span>
-            <div className="grid grid-cols-3 gap-1">
+            <div className="grid grid-cols-3 gap-1.5">
               <button
                 type="button"
-                onClick={() => setQuickOffset(60)}
-                className="py-1 px-1.5 text-center text-xs font-medium rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors"
-                title="1 minute countdown"
+                onClick={() => setQuickOffset(5 * 60)}
+                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
+                title="Add 5 minutes to current time"
               >
-                +1 min
+                +5min
               </button>
               <button
                 type="button"
-                onClick={() => setQuickOffset(300)}
-                className="py-1 px-1.5 text-center text-xs font-medium rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors"
-                title="5 minutes countdown"
+                onClick={() => setQuickOffset(15 * 60)}
+                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
+                title="Add 15 minutes to current time"
               >
-                +5 min
+                +15min
               </button>
               <button
                 type="button"
-                onClick={() => setQuickOffset(3600)}
-                className="py-1 px-1.5 text-center text-xs font-medium rounded-md bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors"
-                title="1 hour countdown"
+                onClick={() => setQuickOffset(30 * 60)}
+                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
+                title="Add 30 minutes to current time"
               >
-                +1 hour
-              </button>
-            </div>
-
-            <div className="grid grid-cols-2 gap-1 pt-0.5">
-              <button
-                type="button"
-                onClick={() => setQuickOffset(10)}
-                className="flex items-center justify-center gap-1 py-1 px-2 text-[11px] font-medium rounded-md bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/50 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 transition-colors"
-                title="Trigger zero in 10 seconds for testing"
-              >
-                <Zap className="w-2.5 h-2.5 text-amber-500" />
-                <span>+10s (Zero alert)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setQuickOffset(-120)}
-                className="flex items-center justify-center gap-1 py-1 px-2 text-[11px] font-medium rounded-md bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 transition-colors"
-                title="Set to 2 minutes ago to test Overtime display"
-              >
-                <RotateCcw className="w-2.5 h-2.5 text-rose-500" />
-                <span>-2m (Overtime)</span>
+                +30min
               </button>
             </div>
           </div>
