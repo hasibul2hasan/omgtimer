@@ -181,6 +181,7 @@ export function App() {
               <TargetTimePicker
                 targetTime={targetTime}
                 onTargetChange={setTarget}
+                timeState={timeState}
                 isPaused={isPaused}
                 onPlay={play}
                 onPause={pause}

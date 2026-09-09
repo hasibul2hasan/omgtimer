@@ -1,9 +1,12 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { Calendar, RotateCcw, Zap, ChevronDown, ChevronUp, Clock, Play, Pause } from 'lucide-react';
+import { Calendar, RotateCcw, Zap, ChevronDown, ChevronUp, Clock, Play, Pause, AlertCircle } from 'lucide-react';
+
+const pad = (n, width = 2) => String(Math.floor(n)).padStart(width, '0');
 
 export function TargetTimePicker({
   targetTime,
   onTargetChange,
+  timeState,
   isPaused = false,
   onPlay,
   onPause,
@@ -130,20 +133,6 @@ export function TargetTimePicker({
     onTargetChange(newDate);
   };
 
-  const setDateToToday = () => {
-    const now = new Date();
-    const newDate = new Date(targetTime || Date.now());
-    newDate.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
-    onTargetChange(newDate);
-  };
-
-  const setDateToTomorrow = () => {
-    const now = new Date();
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const newDate = new Date(targetTime || Date.now());
-    newDate.setFullYear(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
-    onTargetChange(newDate);
-  };
 
   // Quick preset helper functions from current time
   const setQuickOffset = (secondsOffset) => {
@@ -282,72 +271,124 @@ export function TargetTimePicker({
               </button>
             </div>
           </div>
-          {/* Live Current Time Clock Display */}
-          <div className="flex items-center justify-between px-3 py-2 rounded-md bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-sm">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="relative flex items-center justify-center w-7 h-7 rounded-md bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 flex-shrink-0">
-                <Clock className="w-3.5 h-3.5" />
-                <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          {/* Mini Version of the Big Timer (Live Countdown / Overtime Preview) - Mobile Only */}
+          {timeState && (
+            <div
+              className={`sm:hidden p-2 rounded-md border transition-colors shadow-sm ${
+                isPaused
+                  ? 'border-amber-300 dark:border-amber-900/70 bg-amber-50/60 dark:bg-amber-950/30'
+                  : timeState.isOvertime
+                  ? 'border-red-300 dark:border-red-900/70 bg-red-50/60 dark:bg-red-950/30'
+                  : 'border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950'
+              }`}
+            >
+              {/* Mini Status Badge */}
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  Timer Preview
                 </span>
-              </div>
-              <div className="min-w-0">
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center gap-1">
-                  <span>Current Time</span>
-                  <span className="text-[9px] px-1 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 font-bold">
-                    LIVE
+                {isPaused ? (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                    <Pause className="w-2.5 h-2.5 fill-current" />
+                    PAUSED
                   </span>
+                ) : timeState.isOvertime ? (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800 animate-pulse">
+                    <AlertCircle className="w-2.5 h-2.5" />
+                    OVERTIME
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+                    <Clock className="w-2.5 h-2.5" />
+                    REMAINING
+                  </span>
+                )}
+              </div>
+
+              {/* Smaller version of Big Timer blocks */}
+              <div className="flex items-center justify-center gap-1.5 font-mono">
+                {timeState.isOvertime && (
+                  <span className="text-red-600 dark:text-red-500 font-black text-xl self-center pb-2 flex-shrink-0">
+                    -
+                  </span>
+                )}
+
+                {/* Days if days > 0 */}
+                {timeState.days > 0 && (
+                  <>
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                          timeState.isOvertime
+                            ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
+                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                        }`}
+                      >
+                        {pad(timeState.days)}
+                      </div>
+                      <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">DAYS</span>
+                    </div>
+                    <span className="text-xs font-bold text-slate-400 pb-2">:</span>
+                  </>
+                )}
+
+                {/* Hours */}
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                      timeState.isOvertime
+                        ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                    }`}
+                  >
+                    {pad(timeState.days > 0 ? timeState.hours : timeState.totalHours)}
+                  </div>
+                  <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">HOURS</span>
                 </div>
-                <div className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100 tracking-tight">
-                  {liveTimeString}
+
+                <span className="text-xs font-bold text-slate-400 pb-2">:</span>
+
+                {/* Minutes */}
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                      timeState.isOvertime
+                        ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                    }`}
+                  >
+                    {pad(timeState.minutes)}
+                  </div>
+                  <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">MINS</span>
+                </div>
+
+                <span className="text-xs font-bold text-slate-400 pb-2">:</span>
+
+                {/* Seconds */}
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                      timeState.isOvertime
+                        ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                    }`}
+                  >
+                    {pad(timeState.seconds)}
+                  </div>
+                  <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">SECS</span>
                 </div>
               </div>
             </div>
+          )}
 
-            <div className="text-right flex-shrink-0">
-              <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                {liveDateString}
-              </div>
-            </div>
-          </div>
-
-          {/* Redesigned Custom Target Time Section: shows only time on the bar + date selector button */}
+          {/* Custom Target Time Section: shows only time on the bar + date selector pill */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label
-                htmlFor="target-time-input"
-                className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"
-              >
-                Target Time
-              </label>
-              <div className="flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={setDateToToday}
-                  className={`px-1.5 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
-                    dateLabel === 'Today'
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                  title="Set target date to today"
-                >
-                  Today
-                </button>
-                <button
-                  type="button"
-                  onClick={setDateToTomorrow}
-                  className={`px-1.5 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
-                    dateLabel === 'Tomorrow'
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                  title="Set target date to tomorrow"
-                >
-                  Tomorrow
-                </button>
-              </div>
-            </div>
+            <label
+              htmlFor="target-time-input"
+              className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block"
+            >
+              Target Time
+            </label>
 
             {/* Combined Field Bar: displays ONLY Time on the bar + Date Selector Pill */}
             <div className="flex items-center rounded-md border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500 transition-all overflow-hidden shadow-inner">
