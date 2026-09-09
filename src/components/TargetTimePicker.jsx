@@ -134,13 +134,13 @@ export function TargetTimePicker({
     return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
   }, [targetTime]);
 
-  // Readable summary e.g. "Today 10:00:00 PM"
+  // Readable summary e.g. "Today 10:00 PM"
   const summaryTime = useMemo(() => {
     if (!targetTime) return '';
     const d = new Date(targetTime);
     const now = new Date();
     const isToday = d.toDateString() === now.toDateString();
-    const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const timeStr = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     if (isToday) {
       return timeStr;
     }
@@ -189,14 +189,13 @@ export function TargetTimePicker({
     }
   };
 
-  // Formatted string for desktop writing e.g. "02:30:00 PM"
+  // Formatted string for desktop writing e.g. "2:30 PM" (no seconds needed)
   const formattedTargetTime = useMemo(() => {
     if (!targetTime) return '';
     const d = new Date(targetTime);
     return d.toLocaleTimeString([], {
-      hour: '2-digit',
+      hour: 'numeric',
       minute: '2-digit',
-      second: '2-digit',
     });
   }, [targetTime]);
 
@@ -229,9 +228,8 @@ export function TargetTimePicker({
       onTargetChange(parsed);
       setDesktopTimeText(
         parsed.toLocaleTimeString([], {
-          hour: '2-digit',
+          hour: 'numeric',
           minute: '2-digit',
-          second: '2-digit',
         })
       );
     } else {
@@ -490,6 +488,16 @@ export function TargetTimePicker({
                   </div>
                   <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">SECS</span>
                 </div>
+
+                {/* Symmetrical Overtime Spacer: Prevents horizontal shift */}
+                {timeState.isOvertime && (
+                  <span
+                    className="opacity-0 pointer-events-none select-none font-black text-xl self-center pb-2 flex-shrink-0"
+                    aria-hidden="true"
+                  >
+                    -
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -533,7 +541,7 @@ export function TargetTimePicker({
                   onKeyDown={handleDesktopTimeKeyDown}
                   placeholder="e.g. 2:30 PM or 14:30"
                   className="hidden sm:block w-full bg-transparent text-slate-900 dark:text-slate-100 font-mono text-sm font-semibold focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-600"
-                  title="Type your desire time (e.g. 2:30 PM, 14:30, 9am, 10:00:00) and press Enter"
+                  title="Type your desired time (e.g. 2:30 PM, 14:30, 9am) and press Enter"
                   aria-label="Write Target Time"
                 />
               </div>
@@ -576,18 +584,17 @@ export function TargetTimePicker({
             </div>
           </div>
 
-          {/* Quick presets */}
           {/* Quick presets from now */}
           <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
               Quick Presets from Now:
             </span>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-3 gap-1.5 font-mono">
               <button
                 type="button"
                 onClick={() => setQuickOffset(5 * 60)}
                 className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
-                title="Add 5 minutes to current time"
+                title="Add 5 minutes to current time (+5min)"
               >
                 +5min
               </button>
@@ -595,7 +602,7 @@ export function TargetTimePicker({
                 type="button"
                 onClick={() => setQuickOffset(15 * 60)}
                 className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
-                title="Add 15 minutes to current time"
+                title="Add 15 minutes to current time (+15min)"
               >
                 +15min
               </button>
@@ -603,9 +610,33 @@ export function TargetTimePicker({
                 type="button"
                 onClick={() => setQuickOffset(30 * 60)}
                 className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
-                title="Add 30 minutes to current time"
+                title="Add 30 minutes to current time (+30min)"
               >
                 +30min
+              </button>
+              <button
+                type="button"
+                onClick={() => setQuickOffset(-5 * 60)}
+                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 hover:border-red-300 dark:hover:border-red-700 transition-colors cursor-pointer select-none active:scale-95"
+                title="Set target to 5 minutes ago (-5min overtime)"
+              >
+                -5min
+              </button>
+              <button
+                type="button"
+                onClick={() => setQuickOffset(-15 * 60)}
+                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 hover:border-red-300 dark:hover:border-red-700 transition-colors cursor-pointer select-none active:scale-95"
+                title="Set target to 15 minutes ago (-15min overtime)"
+              >
+                -15min
+              </button>
+              <button
+                type="button"
+                onClick={() => setQuickOffset(-30 * 60)}
+                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 hover:border-red-300 dark:hover:border-red-700 transition-colors cursor-pointer select-none active:scale-95"
+                title="Set target to 30 minutes ago (-30min overtime)"
+              >
+                -30min
               </button>
             </div>
           </div>

@@ -58,7 +58,7 @@ export function TimerDisplay({ timeState, appearance = 'blocks', isPaused = fals
         <div className="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-4 md:gap-5 flex-nowrap max-w-full overflow-x-auto px-1">
           {/* Overtime Sign Indicator if Overtime */}
           {isOvertime && (
-            <div className="text-2xl sm:text-7xl md:text-8xl font-extrabold text-red-600 dark:text-red-500 self-center pb-3 sm:pb-8 flex-shrink-0">
+            <div className="font-mono text-2xl sm:text-7xl md:text-8xl font-extrabold text-red-600 dark:text-red-500 self-center pb-3 sm:pb-8 flex-shrink-0 select-none">
               -
             </div>
           )}
@@ -144,6 +144,16 @@ export function TimerDisplay({ timeState, appearance = 'blocks', isPaused = fals
                 SECONDS
             </span>
           </div>
+
+          {/* Symmetrical Overtime Spacer: Ensures clock blocks remain perfectly centered */}
+          {isOvertime && (
+            <div
+              className="font-mono text-2xl sm:text-7xl md:text-8xl font-extrabold opacity-0 pointer-events-none select-none self-center pb-3 sm:pb-8 flex-shrink-0"
+              aria-hidden="true"
+            >
+              -
+            </div>
+          )}
         </div>
       )}
 
@@ -156,8 +166,10 @@ export function TimerDisplay({ timeState, appearance = 'blocks', isPaused = fals
               : 'text-slate-900 dark:text-white bg-white dark:bg-slate-900'
           }`}
         >
-          <div className="font-mono text-3xl xs:text-4xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-bold tracking-tight tabular-nums leading-none text-center">
-            {clockStyle}
+          <div className="font-mono text-3xl xs:text-4xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-bold tracking-tight tabular-nums leading-none flex items-center justify-center">
+            {isOvertime && <span className="select-none">-</span>}
+            <span>{clockHours}:{clockMinutes}:{clockSeconds}</span>
+            {isOvertime && <span className="opacity-0 select-none pointer-events-none" aria-hidden="true">-</span>}
           </div>
         </div>
       )}
@@ -172,10 +184,12 @@ export function TimerDisplay({ timeState, appearance = 'blocks', isPaused = fals
           }`}
         >
           <div className="font-mono text-2xl xs:text-3xl sm:text-7xl md:text-8xl lg:text-[9.5rem] font-bold tracking-tight tabular-nums flex items-baseline justify-center leading-none">
-            <span>{isOvertime ? '-' : ''}{clockHours}:{clockMinutes}:{clockSeconds}</span>
+            {isOvertime && <span className="select-none">-</span>}
+            <span>{clockHours}:{clockMinutes}:{clockSeconds}</span>
             <span className="text-sm xs:text-lg sm:text-4xl md:text-6xl lg:text-7xl opacity-75 ml-1 sm:ml-2">
               .{clockMs}
             </span>
+            {isOvertime && <span className="opacity-0 select-none pointer-events-none" aria-hidden="true">-</span>}
           </div>
         </div>
       )}
@@ -189,8 +203,10 @@ export function TimerDisplay({ timeState, appearance = 'blocks', isPaused = fals
               : 'text-slate-900 dark:text-white bg-white dark:bg-slate-900'
           }`}
         >
-          <div className="font-mono text-3xl xs:text-5xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-extrabold tracking-tight tabular-nums leading-none text-center">
-            {formattedSecondsOnly}
+          <div className="font-mono text-3xl xs:text-5xl sm:text-8xl md:text-9xl lg:text-[10.5rem] font-extrabold tracking-tight tabular-nums leading-none flex items-center justify-center">
+            {isOvertime && <span className="select-none">-</span>}
+            <span>{totalSeconds.toLocaleString()}s</span>
+            {isOvertime && <span className="opacity-0 select-none pointer-events-none" aria-hidden="true">-</span>}
           </div>
         </div>
       )}

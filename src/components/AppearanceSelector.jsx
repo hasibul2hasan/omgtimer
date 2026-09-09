@@ -101,23 +101,19 @@ export function AppearanceSelector({
                 key={opt.id}
                 type="button"
                 onClick={() => onChange(opt.id)}
-                className={`flex items-start gap-1.5 p-2 rounded-md border text-left cursor-pointer transition-colors select-none ${
+                className={`flex items-start p-2 rounded-md border text-left cursor-pointer transition-colors select-none active:scale-95 ${
                   isSelected
                     ? 'bg-indigo-50 dark:bg-indigo-950/60 border-indigo-500 text-indigo-900 dark:text-indigo-200 shadow-sm'
                     : 'bg-slate-50/70 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
-                <div
-                  className={`w-3 h-3 rounded-sm border flex items-center justify-center mt-0.5 flex-shrink-0 ${
-                    isSelected ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300 dark:border-slate-600'
-                  }`}
-                >
-                  {isSelected && <div className="w-1.5 h-1.5 rounded-sm bg-white" />}
-                </div>
-
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1">
-                    <Icon className="w-3 h-3 text-indigo-500 flex-shrink-0" />
+                  <div className="flex items-center gap-1.5">
+                    <Icon
+                      className={`w-3.5 h-3.5 flex-shrink-0 ${
+                        isSelected ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'
+                      }`}
+                    />
                     <span className="text-xs font-semibold truncate leading-none">{opt.name}</span>
                   </div>
                   <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 truncate">
