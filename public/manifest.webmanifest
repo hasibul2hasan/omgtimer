@@ -1,0 +1,17 @@
+{
+  "name": "Dynamic Overtime Countdown Timer",
+  "short_name": "Overtime Timer",
+  "description": "Modern responsive countdown and overtime tracker with zero-trigger effects and googly eyes.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
