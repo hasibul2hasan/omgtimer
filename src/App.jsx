@@ -121,7 +121,7 @@ export function App() {
   }, [enableConfetti, enableSound, playChime]);
 
   // Countdown hook
-  const { targetTime, setTarget, timeState } = useCountdown({
+  const { targetTime, setTarget, timeState, isPaused, play, pause, reset } = useCountdown({
     onZeroTrigger: handleZeroTrigger,
   });
 
@@ -141,6 +141,8 @@ export function App() {
     triggerConfettiBurst();
   };
 
+  const [activeMobileDropdown, setActiveMobileDropdown] = useState(null);
+
   const handlePreviewSound = () => {
     getAudioContext();
     playChime();
@@ -155,19 +157,7 @@ export function App() {
     >
       {/* Hide surrounding UI when in fullscreen */}
       {!isFullscreen && (
-        <>
-          {/* Floating Target Date & Time Box (Top Left Corner) */}
-          <TargetTimePicker
-            targetTime={targetTime}
-            onTargetChange={setTarget}
-          />
-
-          {/* Floating Countdown Appearance Box (Top Right Corner) */}
-          <AppearanceSelector
-            value={appearance}
-            onChange={setAppearance}
-          />
-
+        <div className="w-full relative z-30 flex-shrink-0">
           {/* Main Navigation Header */}
           <Header
             theme={theme}
@@ -176,7 +166,44 @@ export function App() {
             isFullscreen={isFullscreen}
             toggleFullscreen={toggleFullscreen}
           />
-        </>
+
+          {/* Mobile backdrop to dismiss open dropdown on outside tap */}
+          {activeMobileDropdown && (
+            <div
+              onClick={() => setActiveMobileDropdown(null)}
+              className="fixed inset-0 z-30 bg-black/30 backdrop-blur-[1px] sm:hidden"
+            />
+          )}
+
+          {/* Controls row for Mobile (side-by-side with zero overlap), transparent on desktop via sm:contents */}
+          <div className="flex sm:contents items-center justify-center px-3 pt-0.5 pb-1 gap-2 max-w-lg mx-auto w-full">
+            <div className="flex-1 min-w-0 sm:flex-none">
+              <TargetTimePicker
+                targetTime={targetTime}
+                onTargetChange={setTarget}
+                isPaused={isPaused}
+                onPlay={play}
+                onPause={pause}
+                onReset={reset}
+                isMobileOpen={activeMobileDropdown === 'target'}
+                onToggleMobile={() =>
+                  setActiveMobileDropdown((prev) => (prev === 'target' ? null : 'target'))
+                }
+              />
+            </div>
+
+            <div className="flex-1 min-w-0 sm:flex-none">
+              <AppearanceSelector
+                value={appearance}
+                onChange={setAppearance}
+                isMobileOpen={activeMobileDropdown === 'appearance'}
+                onToggleMobile={() =>
+                  setActiveMobileDropdown((prev) => (prev === 'appearance' ? null : 'appearance'))
+                }
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Exit Fullscreen button (only in Fullscreen mode) - High Visibility Colored Icon Button */}
@@ -194,7 +221,7 @@ export function App() {
 
       {/* Main Content Area - In fullscreen, the clock takes full screen center stage */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-2 max-w-7xl w-full mx-auto relative z-10 min-h-0">
-        <TimerDisplay timeState={timeState} appearance={appearance} />
+        <TimerDisplay timeState={timeState} appearance={appearance} isPaused={isPaused} />
       </main>
 
       {/* Bottom controls & Footer - hidden in fullscreen */}

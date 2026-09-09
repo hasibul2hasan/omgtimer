@@ -1,9 +1,9 @@
 import React from 'react';
-import { Clock, AlertCircle } from 'lucide-react';
+import { Clock, AlertCircle, Pause } from 'lucide-react';
 
 const pad = (n, width = 2) => String(Math.floor(n)).padStart(width, '0');
 
-export function TimerDisplay({ timeState, appearance = 'blocks' }) {
+export function TimerDisplay({ timeState, appearance = 'blocks', isPaused = false }) {
   const {
     isOvertime,
     days,
@@ -31,7 +31,12 @@ export function TimerDisplay({ timeState, appearance = 'blocks' }) {
     <div className="flex flex-col items-center justify-center w-full my-1 sm:my-2">
       {/* Dynamic Status Badge */}
       <div className="mb-2 sm:mb-4">
-        {isOvertime ? (
+        {isPaused ? (
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-md bg-amber-100 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 font-semibold text-xs sm:text-sm tracking-wider shadow-sm">
+            <Pause className="w-3.5 h-3.5 text-amber-600 fill-current" />
+            <span>TIMER PAUSED</span>
+          </div>
+        ) : isOvertime ? (
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-md bg-red-100 dark:bg-red-950/60 border border-red-300 dark:border-red-800 text-red-700 dark:text-red-400 font-semibold text-xs sm:text-sm tracking-wider animate-pulse-danger shadow-sm">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
