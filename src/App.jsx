@@ -4,6 +4,7 @@ import { Header } from './components/Header';
 import { TimerDisplay } from './components/TimerDisplay';
 import { TargetTimePicker } from './components/TargetTimePicker';
 import { ZeroTriggerPanel } from './components/ZeroTriggerPanel';
+import { SessionTimeBar } from './components/SessionTimeBar';
 import { AppearanceSelector } from './components/AppearanceSelector';
 import { MultiplatformModal } from './components/MultiplatformModal';
 import { useCountdown } from './hooks/useCountdown';
@@ -121,7 +122,7 @@ export function App() {
   }, [enableConfetti, enableSound, playChime]);
 
   // Countdown hook
-  const { targetTime, setTarget, timeState, isPaused, play, pause, reset } = useCountdown({
+  const { targetTime, setTarget, startTime, timeState, isPaused, play, pause, reset } = useCountdown({
     onZeroTrigger: handleZeroTrigger,
   });
 
@@ -228,18 +229,25 @@ export function App() {
       {/* Bottom controls & Footer - hidden in fullscreen */}
       {!isFullscreen && (
         <>
-          {/* Zero-Hour Actions & Visual Effects Docked at the Bottom */}
-          <div className="w-full max-w-xl mx-auto px-4 pb-2 z-10 flex-shrink-0">
-            <div className="glass-panel px-3 py-1.5 rounded-md shadow-sm">
-              <ZeroTriggerPanel
-                enableConfetti={enableConfetti}
-                setEnableConfetti={setEnableConfetti}
-                enableSound={enableSound}
-                setEnableSound={setEnableSound}
-                onPreviewConfetti={handlePreviewConfetti}
-                onPreviewSound={handlePreviewSound}
-              />
-            </div>
+          {/* Started Time and Targeted Time Single Bar */}
+          <div className="w-full max-w-xl mx-auto px-4 pb-1.5 z-10 flex-shrink-0">
+            <SessionTimeBar
+              startTime={startTime}
+              targetTime={targetTime}
+              onSetStartToNow={() => setStartTime(new Date())}
+            />
+          </div>
+
+          {/* Zero-Hour Actions Docked at the Bottom */}
+          <div className="flex items-center justify-center pb-2 z-10 flex-shrink-0 px-4">
+            <ZeroTriggerPanel
+              enableConfetti={enableConfetti}
+              setEnableConfetti={setEnableConfetti}
+              enableSound={enableSound}
+              setEnableSound={setEnableSound}
+              onPreviewConfetti={handlePreviewConfetti}
+              onPreviewSound={handlePreviewSound}
+            />
           </div>
 
           {/* Modern Compact Footer */}

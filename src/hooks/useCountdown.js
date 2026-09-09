@@ -9,6 +9,7 @@ export function getDefaultTargetTime() {
 
 export function useCountdown({ onZeroTrigger } = {}) {
   const [targetTime, setTargetTime] = useState(() => getDefaultTargetTime());
+  const [startTime, setStartTime] = useState(() => new Date());
   const [isPaused, setIsPaused] = useState(false);
   const pausedDiffRef = useRef(null);
 
@@ -70,8 +71,9 @@ export function useCountdown({ onZeroTrigger } = {}) {
 
   // Reset action: resets target to exact current time (00:00:00) and unpauses
   const reset = useCallback(() => {
-    const newTarget = new Date();
-    setTargetTime(newTarget);
+    const now = new Date();
+    setTargetTime(now);
+    setStartTime(now);
     setIsPaused(false);
     pausedDiffRef.current = null;
     hasTriggeredZeroRef.current = false;
@@ -79,9 +81,14 @@ export function useCountdown({ onZeroTrigger } = {}) {
     setTimeState(calculateTimeState(0));
   }, []);
 
-  // When target changes, reset triggered flag if the new target is in the future
-  const setTarget = useCallback((newDate) => {
+  // When target changes, update start time and reset triggered flag
+  const setTarget = useCallback((newDate, explicitStartTime = null) => {
     setTargetTime(newDate);
+    if (explicitStartTime) {
+      setStartTime(explicitStartTime);
+    } else {
+      setStartTime(new Date());
+    }
     const diff = newDate.getTime() - Date.now();
     if (isPaused) {
       pausedDiffRef.current = diff;
@@ -125,6 +132,8 @@ export function useCountdown({ onZeroTrigger } = {}) {
   return {
     targetTime,
     setTarget,
+    startTime,
+    setStartTime,
     timeState,
     isPaused,
     play,
