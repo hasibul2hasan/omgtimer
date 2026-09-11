@@ -88,7 +88,7 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
         <div className="flex items-center gap-1.5 min-w-0">
           <Clock className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" />
           <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-            Starteddd
+            Started
           </span>
         </div>
 
@@ -99,8 +99,8 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
               onClick={handleSetToNow}
               onTouchEnd={handleSetToNow}
               className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-semibold transition-all cursor-pointer select-none flex-shrink-0 touch-manipulation apple-press ${feedback
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'bg-black/5 hover:bg-indigo-500/10 dark:bg-white/10 dark:hover:bg-indigo-500/20 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : 'bg-black/5 hover:bg-indigo-500/10 dark:bg-white/10 dark:hover:bg-indigo-500/20 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400'
                 }`}
               title="Set started time to exact current time (Now)"
               aria-label="Set started time to current time"
@@ -121,8 +121,8 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
 
           <span
             className={`text-xs font-mono tabular-nums font-semibold truncate transition-colors ${feedback
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-slate-900 dark:text-slate-100'
+              ? 'text-emerald-600 dark:text-emerald-400'
+              : 'text-slate-900 dark:text-slate-100'
               }`}
           >
             {startedString}
