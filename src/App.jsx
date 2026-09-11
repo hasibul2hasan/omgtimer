@@ -263,20 +263,6 @@ export function App() {
               isPlayingSound={isPlayingRingtone}
             />
           </div>
-
-          {/* Modern Compact Footer */}
-          <footer className="w-full py-1.5 text-center text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-300 dark:border-slate-800 relative z-10 flex-shrink-0">
-            <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-1">
-              <span>OMGTIMER &bull; Zero-Hour Precision & Overtime Engine</span>
-              <button
-                type="button"
-                onClick={() => setIsMultiplatformOpen(true)}
-                className="hover:text-indigo-600 dark:hover:text-indigo-400 underline underline-offset-4 transition-colors font-medium"
-              >
-                Deploy on Mac, Windows, iOS & Android &rarr;
-              </button>
-            </div>
-          </footer>
         </>
       )}
 

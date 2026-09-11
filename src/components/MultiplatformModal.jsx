@@ -39,7 +39,7 @@ npm run build && npx tauri build`;
 npm install @capacitor/core @capacitor/cli @capacitor/status-bar
 
 # 2. Initialize Capacitor
-npx cap init "Overtime Timer" "com.overtime.timer" --web-dir "dist"
+npx cap init "omgovertime" "com.omgovertime.app" --web-dir "dist"
 
 # 3. Add native platforms
 npx cap add ios
@@ -169,7 +169,7 @@ npx cap open android`;
                   <span>Windows</span>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  In Edge / Chrome: Click <strong>"Install Overtime Timer"</strong> in the address bar. Creates a start menu shortcut and taskbar icon.
+                  In Edge / Chrome: Click <strong>"Install omgovertime"</strong> in the address bar. Creates a start menu shortcut and taskbar icon.
                 </p>
               </div>
             </div>

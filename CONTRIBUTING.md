@@ -1,6 +1,6 @@
-# Contributing to OMGTimer ⏱️
+# Contributing to omgovertime ⏱️
 
-First off, thank you for considering contributing to **OMGTimer**! 🎉 It's people like you that make OMGTimer an awesome tool for everyone.
+First off, thank you for considering contributing to **omgovertime**! 🎉 It's people like you that make omgovertime an awesome tool for everyone.
 
 Following these guidelines helps ensure a smooth, transparent, and collaborative process for everyone involved.
 
@@ -24,7 +24,7 @@ Following these guidelines helps ensure a smooth, transparent, and collaborative
 
 ## 📜 Code of Conduct
 
-This project and everyone participating in it is governed by the [OMGTimer Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to the project maintainers.
+This project and everyone participating in it is governed by the [omgovertime Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to the project maintainers.
 
 ---
 
@@ -34,7 +34,7 @@ This project and everyone participating in it is governed by the [OMGTimer Code 
 
 Found a bug? Help us squash it! 🐛
 
-1. **Check Existing Issues**: Search [GitHub Issues](https://github.com/hasibul2hasan/omgtimer/issues) to avoid duplicate reports.
+1. **Check Existing Issues**: Search [GitHub Issues](https://github.com/hasibul2hasan/omgovertime/issues) to avoid duplicate reports.
 2. **Open a Bug Report**: If not reported yet, create a new issue with:
    - A clear and descriptive title.
    - Exact steps to reproduce the bug.
@@ -63,7 +63,7 @@ We welcome PRs for:
 
 ## 🛠️ Local Development Setup
 
-Follow these steps to run OMGTimer on your machine:
+Follow these steps to run omgovertime on your machine:
 
 ### 1. Prerequisites
 - **Node.js**: v18.0.0 or higher
@@ -72,8 +72,8 @@ Follow these steps to run OMGTimer on your machine:
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/hasibul2hasan/omgtimer.git
-cd omgtimer
+git clone https://github.com/hasibul2hasan/omgovertime.git
+cd omgovertime
 ```
 
 ### 3. Install Dependencies
@@ -93,7 +93,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to view the 
 ## 🏗️ Project Architecture
 
 ```text
-omgtimer/
+omgovertime/
 ├── public/                 # Static assets and icons
 ├── src/
 │   ├── components/         # Modular React UI components
@@ -169,4 +169,4 @@ omgtimer/
 
 Every contribution counts! Whether it's fixing a typo, optimizing an algorithm, or building a brand new feature — all contributors will be recognized.
 
-Thank you for helping build **OMGTimer**! ⏱️❤️
+Thank you for helping build **omgovertime**! ⏱️❤️

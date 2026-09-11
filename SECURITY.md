@@ -2,7 +2,7 @@
 
 ## 🛡️ Supported Versions
 
-We actively maintain and provide security updates for the following versions of OMGTimer:
+We actively maintain and provide security updates for the following versions of omgovertime:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -13,13 +13,13 @@ We actively maintain and provide security updates for the following versions of 
 
 ## 🚨 Reporting a Vulnerability
 
-We take the security of **OMGTimer** and our users seriously. If you discover a security vulnerability, we appreciate your help in disclosing it to us responsibly.
+We take the security of **omgovertime** and our users seriously. If you discover a security vulnerability, we appreciate your help in disclosing it to us responsibly.
 
 ### How to Report
 
 Please **do not** open a public GitHub issue for security vulnerabilities. Instead:
 
-1. Send an email to the repository owner or submit a private security advisory on GitHub via **[Security > Report a vulnerability](https://github.com/hasibul2hasan/omgtimer/security/advisories/new)**.
+1. Send an email to the repository owner or submit a private security advisory on GitHub via **[Security > Report a vulnerability](https://github.com/hasibul2hasan/omgovertime/security/advisories/new)**.
 2. Include in your report:
    - A description of the vulnerability and its potential impact.
    - Detailed step-by-step instructions or proof-of-concept (PoC) to reproduce the issue.
@@ -35,9 +35,9 @@ Please **do not** open a public GitHub issue for security vulnerabilities. Inste
 
 ## 🔒 Security Best Practices
 
-OMGTimer is a client-side web application built with privacy and security in mind:
+omgovertime is a client-side web application built with privacy and security in mind:
 - **No Private Data Stored**: All timer state and configuration are kept in the browser runtime/local storage.
 - **Zero Tracking**: We do not collect personal identifying information (PII).
 - **Web Audio API**: Sounds are generated locally using browser synthesis, minimizing external asset dependency risks.
 
-Thank you for helping keep OMGTimer and our community safe! 🛡️
+Thank you for helping keep omgovertime and our community safe! 🛡️

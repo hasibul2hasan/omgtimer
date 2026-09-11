@@ -7,6 +7,7 @@ import {
   Minimize2,
   Download,
   Laptop,
+  Smartphone,
 } from 'lucide-react';
 import { Logo } from './Logo';
 
@@ -98,14 +99,15 @@ export function Header({
             )}
           </button>
 
-          {/* Multiplatform / Native App Guide Button */}
+          {/* Multiplatform / Native App Guide Button (Visible across all viewports) */}
           <button
             type="button"
             onClick={onOpenMultiplatformModal}
-            className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 transition-colors shadow-xs"
+            className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-md text-xs font-semibold border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 transition-colors shadow-xs active:scale-95"
             title="Install for Mac, Windows, iOS & Android"
           >
-            <Laptop className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+            <Smartphone className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 sm:hidden" />
+            <Laptop className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 hidden sm:inline" />
             <span>App</span>
           </button>
         </div>

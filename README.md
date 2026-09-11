@@ -1,9 +1,9 @@
 <div align="center">
 
-# ⏱️ OMGTimer
+# ⏱️ omgovertime
 ### *Dynamic Overtime Countdown & Presentation Timer*
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-omgtimer.vercel.app-00DC82?style=for-the-badge&logo=vercel&logoColor=white)](https://omgtimer.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-omgovertime.vercel.app-00DC82?style=for-the-badge&logo=vercel&logoColor=white)](https://omgovertime.vercel.app/)
 [![React 19](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -14,7 +14,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 [![Code of Conduct](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=flat-square)](CODE_OF_CONDUCT.md)
 [![Security Policy](https://img.shields.io/badge/Security-Policy-blueviolet.svg?style=flat-square)](SECURITY.md)
-[![Status: Active](https://img.shields.io/badge/Status-Active%20%26%20Maintained-success?style=flat-square)](https://omgtimer.vercel.app/)
+[![Status: Active](https://img.shields.io/badge/Status-Active%20%26%20Maintained-success?style=flat-square)](https://omgovertime.vercel.app/)
 
 <br />
 
@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <a href="https://omgtimer.vercel.app/"><strong>🌐 Open Live App</strong></a> •
+  <a href="https://omgovertime.vercel.app/"><strong>🌐 Open Live App</strong></a> •
   <a href="#-features"><strong>✨ Features</strong></a> •
   <a href="#-quick-start"><strong>⚡ Quick Start</strong></a> •
   <a href="#-testing--controls"><strong>🧪 Testing</strong></a> •
@@ -36,9 +36,9 @@
 
 </div>
 
-## 🌟 Why OMGTimer?
+## 🌟 Why omgovertime?
 
-Standard timers stop at `00:00:00` or beep endlessly. **OMGTimer** takes time management to the next level:
+Standard timers stop at `00:00:00` or beep endlessly. **omgovertime** takes time management to the next level:
 
 - ⏳ **Count Down, Then Count Up**: When the clock hits zero, it doesn't freeze — it dynamically flips to an overtime tracker with high-contrast visual cues so speakers and teams know exactly how much overtime has elapsed.
 - 🔊 **Zero External Audio Dependencies**: Utilizes the native **Web Audio API** to generate rich procedural chime melodies and alert ringtones on the fly.
@@ -67,10 +67,10 @@ Standard timers stop at `00:00:00` or beep endlessly. **OMGTimer** takes time ma
 
 The application is deployed and maintained on Vercel:
 
-👉 **[https://omgtimer.vercel.app/](https://omgtimer.vercel.app/)**
+👉 **[https://omgovertime.vercel.app/](https://omgovertime.vercel.app/)**
 
 > [!TIP]
-> Add OMGTimer to your browser bookmarks or install it as a PWA/Home Screen shortcut on mobile or tablet for quick access during presentations!
+> Add omgovertime to your browser bookmarks or install it as a PWA/Home Screen shortcut on mobile or tablet for quick access during presentations!
 
 ---
 
@@ -79,8 +79,8 @@ The application is deployed and maintained on Vercel:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/hasibul2hasan/omgtimer.git
-cd omgtimer
+git clone https://github.com/hasibul2hasan/omgovertime.git
+cd omgovertime
 ```
 
 ### 2. Install dependencies
@@ -107,7 +107,7 @@ npm run build
 
 ## 🧪 Testing & Controls
 
-Want to test how OMGTimer reacts when reaching zero without waiting 10 minutes? Use the built-in trigger panel:
+Want to test how omgovertime reacts when reaching zero without waiting 10 minutes? Use the built-in trigger panel:
 
 1. **⚡ Trigger 0:00 Test**: Instantly simulates reaching zero to trigger the audio chime/ringtone and confetti burst.
 2. **🎵 Test Ringtone**: Plays the procedural Web Audio synthesizer melodies.
@@ -161,6 +161,6 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more informa
 
 Made with ❤️ by [Hasibul Hasan](https://github.com/hasibul2hasan) and contributors.
 
-**[⭐ Star us on GitHub](https://github.com/hasibul2hasan/omgtimer)** if you find OMGTimer helpful!
+**[⭐ Star us on GitHub](https://github.com/hasibul2hasan/omgovertime)** if you find omgovertime helpful!
 
 </div>
