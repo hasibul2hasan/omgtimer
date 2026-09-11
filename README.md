@@ -3,7 +3,7 @@
 # ⏱️ omgovertime
 ### *Dynamic Overtime Countdown & Presentation Timer*
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-omgovertime.vercel.app-00DC82?style=for-the-badge&logo=vercel&logoColor=white)](https://omgovertime.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-omgovertime.pages.dev-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://omgovertime.pages.dev/)
 [![React 19](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -14,7 +14,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
 [![Code of Conduct](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?style=flat-square)](CODE_OF_CONDUCT.md)
 [![Security Policy](https://img.shields.io/badge/Security-Policy-blueviolet.svg?style=flat-square)](SECURITY.md)
-[![Status: Active](https://img.shields.io/badge/Status-Active%20%26%20Maintained-success?style=flat-square)](https://omgovertime.vercel.app/)
+[![Status: Active](https://img.shields.io/badge/Status-Active%20%26%20Maintained-success?style=flat-square)](https://omgovertime.pages.dev/)
 
 <br />
 
@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <a href="https://omgovertime.vercel.app/"><strong>🌐 Open Live App</strong></a> •
+  <a href="https://omgovertime.pages.dev/"><strong>🌐 Open Live App</strong></a> •
   <a href="#-features"><strong>✨ Features</strong></a> •
   <a href="#-quick-start"><strong>⚡ Quick Start</strong></a> •
   <a href="#-testing--controls"><strong>🧪 Testing</strong></a> •
@@ -65,9 +65,9 @@ Standard timers stop at `00:00:00` or beep endlessly. **omgovertime** takes time
 
 ## 🚀 Live Demo & Deployment
 
-The application is deployed and maintained on Vercel:
+The application is deployed and maintained on Cloudflare Pages:
 
-👉 **[https://omgovertime.vercel.app/](https://omgovertime.vercel.app/)**
+👉 **[https://omgovertime.pages.dev/](https://omgovertime.pages.dev/)**
 
 > [!TIP]
 > Add omgovertime to your browser bookmarks or install it as a PWA/Home Screen shortcut on mobile or tablet for quick access during presentations!
@@ -126,7 +126,7 @@ Want to test how omgovertime reacts when reaching zero without waiting 10 minute
 - **Animations**: [Canvas Confetti](https://www.npmjs.com/package/canvas-confetti)
 - **Audio**: Web Audio API (Native browser synthesizer)
 - **Linter**: [Oxlint](https://oxc.rs/)
-- **Hosting**: [Vercel](https://vercel.com/)
+- **Hosting**: [Cloudflare Pages](https://pages.cloudflare.com/)
 
 ---
 

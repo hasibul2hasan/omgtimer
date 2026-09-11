@@ -19,8 +19,8 @@ dist-ssr/
 .env.*.local
 *.local
 
-# Vercel & Deployment
-.vercel/
+# Cloudflare & Deployment
+.wrangler/
 
 # Vite cache & temp
 .vite/
