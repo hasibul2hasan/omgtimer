@@ -82,27 +82,26 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
   }, [effectiveStartTime, targetTime]);
 
   return (
-    <div className="px-3 py-2 rounded-md border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm flex flex-col gap-1.5 select-none w-full max-w-[260px] sm:max-w-[280px]">
+    <div className="px-3.5 py-2 rounded-2xl apple-glass shadow-sm flex flex-col gap-1.5 select-none w-full max-w-[270px] sm:max-w-[290px]">
       {/* 1. Started Time Row */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
           <Clock className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 flex-shrink-0" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
             Started
           </span>
         </div>
 
         <div className="flex items-center gap-1.5 min-w-0">
-          {/* Tiny button to set started time to current time */}
           {onSetStartToNow && (
             <button
               type="button"
               onClick={handleSetToNow}
               onTouchEnd={handleSetToNow}
-              className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-bold transition-all cursor-pointer select-none flex-shrink-0 touch-manipulation active:scale-95 ${
+              className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-semibold transition-all cursor-pointer select-none flex-shrink-0 touch-manipulation apple-press ${
                 feedback
-                  ? 'bg-emerald-600 text-white border border-emerald-500 shadow-xs'
-                  : 'bg-slate-100 hover:bg-indigo-100 dark:bg-slate-800 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-300 hover:text-indigo-700 dark:hover:text-indigo-400 border border-slate-300 dark:border-slate-700'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-black/5 hover:bg-indigo-500/10 dark:bg-white/10 dark:hover:bg-indigo-500/20 text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400'
               }`}
               title="Set started time to exact current time (Now)"
               aria-label="Set started time to current time"
@@ -122,10 +121,10 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
           )}
 
           <span
-            className={`text-xs font-mono font-bold truncate transition-colors ${
+            className={`text-xs font-mono tabular-nums font-semibold truncate transition-colors ${
               feedback
                 ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-slate-950 dark:text-slate-100'
+                : 'text-slate-900 dark:text-slate-100'
             }`}
           >
             {startedString}
@@ -134,24 +133,24 @@ export function SessionTimeBar({ startTime, targetTime, onSetStartToNow }) {
       </div>
 
       {/* Subtle Divider */}
-      <div className="h-px bg-slate-200 dark:bg-slate-800 w-full" />
+      <div className="h-px bg-black/5 dark:bg-white/10 w-full" />
 
       {/* 2. Targeted Time Row */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
           <Target className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
-          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
             Targeted
           </span>
         </div>
 
         <div className="flex items-center gap-1.5 min-w-0">
           {durationLabel && (
-            <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
+            <span className="text-[9px] font-mono tabular-nums font-semibold px-1.5 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-slate-700 dark:text-slate-300">
               {durationLabel}
             </span>
           )}
-          <span className="text-xs font-mono font-bold text-indigo-700 dark:text-indigo-400 truncate">
+          <span className="text-xs font-mono tabular-nums font-semibold text-indigo-600 dark:text-indigo-400 truncate">
             {targetedString}
           </span>
         </div>

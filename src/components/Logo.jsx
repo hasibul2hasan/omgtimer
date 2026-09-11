@@ -9,35 +9,35 @@ export function LogoMark({ className = 'w-7 h-7' }) {
     <img
       src={logoSvg}
       alt="omgovertime logo"
-      className={`${className} flex-shrink-0 object-cover rounded-full drop-shadow-sm border border-slate-300 dark:border-slate-700/80 ring-1 ring-indigo-500/20`}
+      className={`${className} flex-shrink-0 object-cover rounded-full shadow-xs border border-black/10 dark:border-white/20 ring-1 ring-indigo-500/20`}
     />
   );
 }
 
 /**
- * Full Brand Logo with Icon & Solid Clean Logotype
+ * Full Brand Logo with Icon & Apple SF-grade Logotype
  */
 export function Logo({ className = '', showText = true, size = 'md' }) {
-  const iconSize = size === 'sm' ? 'w-6 h-6' : size === 'lg' ? 'w-9 h-9' : 'w-7 h-7 sm:w-8 sm:h-8';
+  const iconSize = size === 'sm' ? 'w-6 h-6' : size === 'lg' ? 'w-9 h-9' : 'w-7 h-7 sm:w-7.5 sm:h-7.5';
   const textSize = size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-base sm:text-lg' : 'text-sm sm:text-base';
 
   return (
-    <div className={`flex items-center gap-1.5 sm:gap-2 select-none group cursor-pointer ${className}`}>
+    <div className={`flex items-center gap-1.5 sm:gap-2 select-none group cursor-pointer apple-press ${className}`}>
       <LogoMark
-        className={`${iconSize} transition-transform duration-200 group-hover:scale-105 group-active:scale-95`}
+        className={`${iconSize} transition-transform duration-150 group-hover:scale-105`}
       />
       {showText && (
-        <div className="flex items-center leading-none">
+        <div className="flex items-center leading-none tracking-tight">
           <span
-            className={`font-black ${textSize} tracking-wider text-indigo-600 dark:text-indigo-400`}
+            className={`font-black ${textSize} tracking-tight text-indigo-600 dark:text-indigo-400`}
           >
             OMG
           </span>
-          <span className={`font-black ${textSize} tracking-wider text-slate-900 dark:text-white ml-0.5`}>
+          <span className={`font-black ${textSize} tracking-tight text-slate-900 dark:text-white ml-1`}>
             OVERTIME
           </span>
           <span
-            className="w-1.5 h-1.5 rounded-full bg-red-500 ml-1 mb-2 animate-pulse"
+            className="w-1.5 h-1.5 rounded-full bg-red-500 ml-1.5 mb-1.5 animate-pulse"
             title="Dynamic Overtime Engine"
           />
         </div>

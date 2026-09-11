@@ -12,7 +12,7 @@ import { useAudioSynth } from './hooks/useAudioSynth';
 import { triggerConfettiBurst } from './utils/confetti';
 
 export function App() {
-  // Theme state: only 'dark' or 'light' (white) mode
+  // Theme state: 'dark' or 'light'
   const [theme, setTheme] = useState('dark');
 
   // Appearance mode: 'blocks' | 'clock' | 'clockMs' | 'seconds'
@@ -29,7 +29,7 @@ export function App() {
   const [isMultiplatformOpen, setIsMultiplatformOpen] = useState(false);
 
   // Audio synthesizer hook (~10s randomized melodic ringtones)
-  const { playRandomRingtone, playChime, stopActiveSounds, isPlaying: isPlayingRingtone, getAudioContext } = useAudioSynth();
+  const { playRandomRingtone, stopActiveSounds, isPlaying: isPlayingRingtone, getAudioContext } = useAudioSynth();
 
   // Helper to get active fullscreen element across all browser engines
   const getFullscreenElement = () => {
@@ -77,7 +77,6 @@ export function App() {
           const promise = requestMethod.call(docEl);
           if (promise && promise.catch) {
             promise.catch((err) => {
-              // iOS Safari or restricted iframe: fallback to React-only fullscreen view
               console.warn('Native requestFullscreen not allowed, using UI fullscreen:', err);
             });
           }
@@ -100,9 +99,7 @@ export function App() {
         try {
           const promise = exitMethod.call(document);
           if (promise && promise.catch) {
-            promise.catch((err) => {
-              console.warn('Native exitFullscreen error:', err);
-            });
+            console.warn('Native exitFullscreen error:', err);
           }
         } catch (err) {
           console.warn('Native exitFullscreen error:', err);
@@ -122,11 +119,11 @@ export function App() {
   }, [enableConfetti, enableSound, playRandomRingtone]);
 
   // Countdown hook
-  const { targetTime, setTarget, startTime, timeState, isPaused, play, pause, reset } = useCountdown({
+  const { targetTime, setTarget, startTime, setStartTime, timeState, isPaused, play, pause, reset } = useCountdown({
     onZeroTrigger: handleZeroTrigger,
   });
 
-  // Apply theme class to document element (dark or white only)
+  // Apply theme class to document element
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('theme-gradient');
@@ -155,10 +152,10 @@ export function App() {
 
   return (
     <div
-      className={`h-[100dvh] max-h-[100dvh] flex flex-col justify-between transition-colors duration-200 overflow-hidden ${
+      className={`h-[100dvh] max-h-[100dvh] flex flex-col justify-between transition-colors duration-300 overflow-hidden select-none ${
         theme === 'dark'
-          ? 'bg-slate-950 text-slate-100'
-          : 'bg-slate-100/70 text-slate-900'
+          ? 'bg-[#000000] text-[#f5f5f7]'
+          : 'bg-[#f5f5f7] text-[#1d1d1f]'
       }`}
     >
       {/* Hide surrounding UI when in fullscreen */}
@@ -177,11 +174,11 @@ export function App() {
           {activeMobileDropdown && (
             <div
               onClick={() => setActiveMobileDropdown(null)}
-              className="fixed inset-0 z-30 bg-black/30 backdrop-blur-[1px] sm:hidden"
+              className="fixed inset-0 z-30 bg-black/40 backdrop-blur-xs sm:hidden"
             />
           )}
 
-          {/* Controls row for Mobile (side-by-side with zero overlap), transparent on desktop via sm:contents */}
+          {/* Controls row for Mobile */}
           <div className="flex sm:contents items-center justify-center px-3 pt-0.5 pb-1 gap-2 max-w-lg mx-auto w-full">
             <div className="flex-1 min-w-0 sm:flex-none">
               <TargetTimePicker
@@ -213,57 +210,53 @@ export function App() {
         </div>
       )}
 
-      {/* Exit Fullscreen button (only in Fullscreen mode) - High Visibility Colored Icon Button */}
+      {/* Exit Fullscreen button - Apple circular floating glass button */}
       {isFullscreen && (
         <button
           type="button"
           onClick={toggleFullscreen}
-          className="fixed top-3 right-3 sm:top-4 sm:right-4 z-50 p-2.5 sm:p-3 rounded-md bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white border border-indigo-400/50 shadow-xl transition-all select-none cursor-pointer"
+          className="fixed top-4 right-4 z-50 p-3 rounded-full apple-glass-heavy text-slate-800 dark:text-slate-100 shadow-xl transition-all cursor-pointer apple-press"
           title="Exit Fullscreen (Esc)"
           aria-label="Exit Fullscreen"
         >
-          <Minimize2 className="w-5 h-5 text-white" />
+          <Minimize2 className="w-5 h-5" />
         </button>
       )}
 
-      {/* Main Content Area - In fullscreen, the clock takes full screen center stage */}
+      {/* Main Content Area */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-2 max-w-7xl w-full mx-auto relative z-10 min-h-0">
         <TimerDisplay timeState={timeState} appearance={appearance} isPaused={isPaused} />
       </main>
 
       {/* Bottom Zone: Status Bar + Actions */}
       {!isFullscreen && (
-        <>
-          {/* Started vs Targeted Time Bar (Horizontal layout on desktop) */}
-          <div className="flex items-center justify-center pb-2 z-10 flex-shrink-0 px-4">
-            <SessionTimeBar
-              startTime={startTime}
-              targetTime={targetTime}
-              onSetStartToNow={() => setStartTime(new Date())}
-            />
-          </div>
+        <div className="flex flex-col items-center justify-center pb-3 z-10 flex-shrink-0 px-4 gap-2">
+          {/* Started vs Targeted Time Bar */}
+          <SessionTimeBar
+            startTime={startTime}
+            targetTime={targetTime}
+            onSetStartToNow={() => setStartTime(new Date())}
+          />
 
-          {/* Zero-Hour Actions Docked at the Bottom */}
-          <div className="flex items-center justify-center pb-2 z-10 flex-shrink-0 px-4">
-            <ZeroTriggerPanel
-              enableConfetti={enableConfetti}
-              setEnableConfetti={setEnableConfetti}
-              enableSound={enableSound}
-              setEnableSound={(val) => {
-                setEnableSound((prev) => {
-                  const nextVal = typeof val === 'function' ? val(prev) : val;
-                  if (!nextVal && isPlayingRingtone) {
-                    stopActiveSounds();
-                  }
-                  return nextVal;
-                });
-              }}
-              onPreviewConfetti={handlePreviewConfetti}
-              onPreviewSound={handlePreviewSound}
-              isPlayingSound={isPlayingRingtone}
-            />
-          </div>
-        </>
+          {/* Zero-Hour Actions Docked */}
+          <ZeroTriggerPanel
+            enableConfetti={enableConfetti}
+            setEnableConfetti={setEnableConfetti}
+            enableSound={enableSound}
+            setEnableSound={(val) => {
+              setEnableSound((prev) => {
+                const nextVal = typeof val === 'function' ? val(prev) : val;
+                if (!nextVal && isPlayingRingtone) {
+                  stopActiveSounds();
+                }
+                return nextVal;
+              });
+            }}
+            onPreviewConfetti={handlePreviewConfetti}
+            onPreviewSound={handlePreviewSound}
+            isPlayingSound={isPlayingRingtone}
+          />
+        </div>
       )}
 
       {/* Multiplatform Guide & Commands Modal */}

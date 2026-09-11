@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { Calendar, RotateCcw, Zap, ChevronDown, ChevronUp, Clock, Play, Pause, AlertCircle } from 'lucide-react';
+import { Calendar, RotateCcw, ChevronDown, ChevronUp, Clock, Play, Pause, AlertCircle } from 'lucide-react';
 
 const pad = (n, width = 2) => String(Math.floor(n)).padStart(width, '0');
 
@@ -54,32 +54,6 @@ export function TargetTimePicker({
   onToggleMobile,
 }) {
   const [isDesktopCollapsed, setIsDesktopCollapsed] = useState(false);
-
-  // Real-time live clock
-  const [currentClock, setCurrentClock] = useState(() => new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentClock(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const liveTimeString = useMemo(() => {
-    return currentClock.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-  }, [currentClock]);
-
-  const liveDateString = useMemo(() => {
-    return currentClock.toLocaleDateString([], {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    });
-  }, [currentClock]);
 
   // Check if collapsed based on screen mode
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
@@ -189,7 +163,7 @@ export function TargetTimePicker({
     }
   };
 
-  // Formatted string for desktop writing e.g. "2:30 PM" (no seconds needed)
+  // Formatted string for desktop writing e.g. "2:30 PM"
   const formattedTargetTime = useMemo(() => {
     if (!targetTime) return '';
     const d = new Date(targetTime);
@@ -202,14 +176,13 @@ export function TargetTimePicker({
   const [desktopTimeText, setDesktopTimeText] = useState(formattedTargetTime);
   const [isTypingDesktop, setIsTypingDesktop] = useState(false);
 
-  // Sync desktop text whenever targetTime changes from external sources (e.g. presets, reset)
+  // Sync desktop text whenever targetTime changes
   useEffect(() => {
     if (!isTypingDesktop) {
       setDesktopTimeText(formattedTargetTime);
     }
   }, [formattedTargetTime, isTypingDesktop]);
 
-  // Handle typing freely on desktop
   const handleDesktopTimeChange = (e) => {
     const val = e.target.value;
     setDesktopTimeText(val);
@@ -233,7 +206,6 @@ export function TargetTimePicker({
         })
       );
     } else {
-      // Restore valid formatted string if invalid
       setDesktopTimeText(formattedTargetTime);
     }
   };
@@ -244,7 +216,6 @@ export function TargetTimePicker({
     }
   };
 
-
   // Quick preset helper functions from current time
   const setQuickOffset = (secondsOffset) => {
     const newDate = new Date(Date.now() + secondsOffset * 1000);
@@ -252,28 +223,30 @@ export function TargetTimePicker({
   };
 
   return (
-    <div className="relative sm:fixed sm:top-4 sm:left-4 z-40 rounded-md border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md transition-all w-full sm:w-auto sm:max-w-[320px]">
+    <div className="relative sm:fixed sm:top-4 sm:left-4 z-40 apple-glass rounded-2xl shadow-lg transition-all duration-200 w-full sm:w-auto sm:max-w-[320px]">
       {/* Header bar / trigger */}
       <div
         onClick={handleToggle}
-        className={`flex items-center justify-between gap-1.5 p-1.5 sm:p-2 sm:px-3 cursor-pointer select-none ${
-          !isCollapsed ? 'sm:border-b sm:border-slate-200 sm:dark:border-slate-800/80' : ''
+        className={`flex items-center justify-between gap-2 p-2 sm:px-3.5 cursor-pointer select-none apple-press ${
+          !isCollapsed ? 'sm:border-b sm:border-black/5 sm:dark:border-white/10' : ''
         }`}
       >
-        <div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
-          <Calendar className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
-          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 truncate">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <div className="w-6 h-6 rounded-lg bg-indigo-500/10 dark:bg-indigo-400/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+            <Calendar className="w-3.5 h-3.5" />
+          </div>
+          <span className="text-xs font-semibold tracking-tight text-slate-800 dark:text-slate-200 truncate">
             {isCollapsed ? 'Target' : 'Target Time'}
           </span>
           {isCollapsed && (
-            <span className="text-[10px] sm:text-[11px] font-mono px-1 sm:px-1.5 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 font-bold truncate max-w-[100px] sm:max-w-none">
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold truncate max-w-[100px] sm:max-w-none">
               {summaryTime}
             </span>
           )}
         </div>
 
         {/* Action icons */}
-        <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1 flex-shrink-0">
           {/* Quick Play/Pause toggle on desktop */}
           <button
             type="button"
@@ -285,18 +258,18 @@ export function TargetTimePicker({
                 onPause?.();
               }
             }}
-            className={`hidden sm:inline-flex items-center justify-center p-1 rounded transition-colors ${
+            className={`hidden sm:inline-flex items-center justify-center p-1 rounded-full transition-colors apple-press ${
               isPaused
-                ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 hover:bg-amber-200'
-                : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400'
+                : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10'
             }`}
             title={isPaused ? 'Resume countdown (Play)' : 'Pause countdown'}
             aria-label={isPaused ? 'Play' : 'Pause'}
           >
             {isPaused ? (
-              <Play className="w-3.5 h-3.5 fill-current text-amber-600" />
+              <Play className="w-3.5 h-3.5 fill-current text-amber-600 dark:text-amber-400" />
             ) : (
-              <Pause className="w-3.5 h-3.5 fill-current text-slate-600 dark:text-slate-300" />
+              <Pause className="w-3.5 h-3.5 fill-current" />
             )}
           </button>
 
@@ -307,7 +280,7 @@ export function TargetTimePicker({
               e.stopPropagation();
               onReset?.();
             }}
-            className="hidden sm:inline-flex items-center justify-center p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="hidden sm:inline-flex items-center justify-center p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors apple-press"
             title="Reset timer to current time"
             aria-label="Reset"
           >
@@ -321,7 +294,7 @@ export function TargetTimePicker({
               e.stopPropagation();
               handleToggle();
             }}
-            className="p-1 rounded text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-black/5 dark:hover:bg-white/10 transition-colors apple-press"
             title={isCollapsed ? 'Expand Target Time controls' : 'Minimize to compact box'}
             aria-label="Toggle Target Time Box"
           >
@@ -334,22 +307,22 @@ export function TargetTimePicker({
         </div>
       </div>
 
-      {/* Expandable Content - overlay dropdown on mobile, inline on desktop */}
+      {/* Expandable Content Popover */}
       {!isCollapsed && (
-        <div className="absolute left-0 top-full mt-1.5 sm:mt-0 sm:static z-50 w-[min(340px,calc(100vw-24px))] sm:w-full glass-panel rounded-md border border-slate-200 dark:border-slate-800 sm:border-none bg-white dark:bg-slate-900 shadow-2xl sm:shadow-none p-2.5 sm:p-3 space-y-2.5">
-          {/* Primary Play, Pause & Reset Control Bar */}
-          <div className="space-y-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
+        <div className="absolute left-0 top-full mt-2 sm:mt-0 sm:static z-50 w-[min(340px,calc(100vw-24px))] sm:w-full rounded-2xl apple-glass-heavy sm:apple-glass-subtle shadow-xl sm:shadow-none p-3 space-y-3 animate-scale-in">
+          {/* Apple Segmented Play, Pause & Reset Control Bar */}
+          <div className="space-y-1.5">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 block px-0.5">
               Timer Controls
             </span>
-            <div className="grid grid-cols-3 gap-1.5 p-1 rounded-md bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
+            <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10">
               <button
                 type="button"
                 onClick={onPlay}
-                className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded font-semibold text-xs transition-colors cursor-pointer select-none ${
+                className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg font-semibold text-xs transition-all cursor-pointer select-none apple-press ${
                   !isPaused
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/10'
                 }`}
                 title="Start / Resume countdown"
               >
@@ -360,10 +333,10 @@ export function TargetTimePicker({
               <button
                 type="button"
                 onClick={onPause}
-                className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded font-semibold text-xs transition-colors cursor-pointer select-none ${
+                className={`flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg font-semibold text-xs transition-all cursor-pointer select-none apple-press ${
                   isPaused
-                    ? 'bg-amber-500 text-slate-950 shadow-sm'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-amber-500 text-slate-950 shadow-xs font-bold'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/10'
                 }`}
                 title="Pause countdown"
               >
@@ -374,7 +347,7 @@ export function TargetTimePicker({
               <button
                 type="button"
                 onClick={onReset}
-                className="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded font-semibold text-xs bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer select-none"
+                className="flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg font-semibold text-xs text-slate-700 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/10 transition-all cursor-pointer select-none apple-press"
                 title="Reset timer to current time (00:00:00)"
               >
                 <RotateCcw className="w-3.5 h-3.5 text-indigo-500" />
@@ -382,44 +355,45 @@ export function TargetTimePicker({
               </button>
             </div>
           </div>
-          {/* Mini Version of the Big Timer (Live Countdown / Overtime Preview) - Mobile Only */}
+
+          {/* Mini Version of the Timer (Live Preview) - Mobile Only */}
           {timeState && (
             <div
-              className={`sm:hidden p-2 rounded-md border transition-colors shadow-sm ${
+              className={`sm:hidden p-2.5 rounded-xl border transition-all ${
                 isPaused
-                  ? 'border-amber-300 dark:border-amber-900/70 bg-amber-50/60 dark:bg-amber-950/30'
+                  ? 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400'
                   : timeState.isOvertime
-                  ? 'border-red-300 dark:border-red-900/70 bg-red-50/60 dark:bg-red-950/30'
-                  : 'border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950'
+                  ? 'border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400'
+                  : 'border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5'
               }`}
             >
               {/* Mini Status Badge */}
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                   Timer Preview
                 </span>
                 {isPaused ? (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-700 dark:text-amber-300">
                     <Pause className="w-2.5 h-2.5 fill-current" />
                     PAUSED
                   </span>
                 ) : timeState.isOvertime ? (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800 animate-pulse">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/20 text-red-700 dark:text-red-400 animate-pulse">
                     <AlertCircle className="w-2.5 h-2.5" />
                     OVERTIME
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/20 text-indigo-700 dark:text-indigo-400">
                     <Clock className="w-2.5 h-2.5" />
                     REMAINING
                   </span>
                 )}
               </div>
 
-              {/* Smaller version of Big Timer blocks */}
+              {/* Smaller version of Timer blocks */}
               <div className="flex items-center justify-center gap-1.5 font-mono">
                 {timeState.isOvertime && (
-                  <span className="text-red-600 dark:text-red-500 font-black text-xl self-center pb-2 flex-shrink-0">
+                  <span className="text-red-600 dark:text-red-400 font-bold text-lg self-center pb-1.5 flex-shrink-0">
                     -
                   </span>
                 )}
@@ -429,15 +403,15 @@ export function TargetTimePicker({
                   <>
                     <div className="flex flex-col items-center">
                       <div
-                        className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                        className={`px-2 py-1 rounded-lg min-w-[34px] text-center font-bold text-sm ${
                           timeState.isOvertime
-                            ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
-                            : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                            ? 'bg-red-500/20 text-red-700 dark:text-red-300'
+                            : 'bg-white/80 dark:bg-white/10 text-slate-900 dark:text-white'
                         }`}
                       >
                         {pad(timeState.days)}
                       </div>
-                      <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">DAYS</span>
+                      <span className="text-[8px] font-sans font-semibold text-slate-400 mt-0.5">DAYS</span>
                     </div>
                     <span className="text-xs font-bold text-slate-400 pb-2">:</span>
                   </>
@@ -446,15 +420,15 @@ export function TargetTimePicker({
                 {/* Hours */}
                 <div className="flex flex-col items-center">
                   <div
-                    className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                    className={`px-2 py-1 rounded-lg min-w-[34px] text-center font-bold text-sm ${
                       timeState.isOvertime
-                        ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
-                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                        ? 'bg-red-500/20 text-red-700 dark:text-red-300'
+                        : 'bg-white/80 dark:bg-white/10 text-slate-900 dark:text-white'
                     }`}
                   >
                     {pad(timeState.days > 0 ? timeState.hours : timeState.totalHours)}
                   </div>
-                  <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">HOURS</span>
+                  <span className="text-[8px] font-sans font-semibold text-slate-400 mt-0.5">HOURS</span>
                 </div>
 
                 <span className="text-xs font-bold text-slate-400 pb-2">:</span>
@@ -462,15 +436,15 @@ export function TargetTimePicker({
                 {/* Minutes */}
                 <div className="flex flex-col items-center">
                   <div
-                    className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                    className={`px-2 py-1 rounded-lg min-w-[34px] text-center font-bold text-sm ${
                       timeState.isOvertime
-                        ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
-                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                        ? 'bg-red-500/20 text-red-700 dark:text-red-300'
+                        : 'bg-white/80 dark:bg-white/10 text-slate-900 dark:text-white'
                     }`}
                   >
                     {pad(timeState.minutes)}
                   </div>
-                  <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">MINS</span>
+                  <span className="text-[8px] font-sans font-semibold text-slate-400 mt-0.5">MINS</span>
                 </div>
 
                 <span className="text-xs font-bold text-slate-400 pb-2">:</span>
@@ -478,46 +452,35 @@ export function TargetTimePicker({
                 {/* Seconds */}
                 <div className="flex flex-col items-center">
                   <div
-                    className={`px-2 py-1 rounded min-w-[34px] text-center border font-bold text-sm sm:text-base ${
+                    className={`px-2 py-1 rounded-lg min-w-[34px] text-center font-bold text-sm ${
                       timeState.isOvertime
-                        ? 'bg-red-100/80 dark:bg-red-900/40 border-red-300 dark:border-red-800 text-red-700 dark:text-red-300'
-                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
+                        ? 'bg-red-500/20 text-red-700 dark:text-red-300'
+                        : 'bg-white/80 dark:bg-white/10 text-slate-900 dark:text-white'
                     }`}
                   >
                     {pad(timeState.seconds)}
                   </div>
-                  <span className="text-[8px] font-sans font-bold text-slate-400 mt-0.5">SECS</span>
+                  <span className="text-[8px] font-sans font-semibold text-slate-400 mt-0.5">SECS</span>
                 </div>
-
-                {/* Symmetrical Overtime Spacer: Prevents horizontal shift */}
-                {timeState.isOvertime && (
-                  <span
-                    className="opacity-0 pointer-events-none select-none font-black text-xl self-center pb-2 flex-shrink-0"
-                    aria-hidden="true"
-                  >
-                    -
-                  </span>
-                )}
               </div>
             </div>
           )}
 
-          {/* Custom Target Time Section: shows only time on the bar + date selector pill */}
+          {/* Custom Target Time Section */}
           <div className="space-y-1.5">
             <label
-              htmlFor="target-time-input"
-              className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block"
+              htmlFor="target-time-input-desktop"
+              className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 block px-0.5"
             >
               Target Time
             </label>
 
-            {/* Combined Field Bar: displays ONLY Time on the bar + Date Selector Pill */}
-            <div className="flex items-center rounded-md border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500 transition-all overflow-hidden shadow-inner">
-              {/* Time Field: Native on mobile, Free-form writable input on desktop */}
-              <div className="relative flex-1 flex items-center min-w-0 px-2.5 py-1.5">
+            {/* Combined Field Bar with Apple styling */}
+            <div className="flex items-center rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 focus-within:ring-2 focus-within:ring-indigo-500/40 transition-all overflow-hidden">
+              <div className="relative flex-1 flex items-center min-w-0 px-3 py-2">
                 <Clock className="w-4 h-4 text-indigo-500 flex-shrink-0 mr-2" />
 
-                {/* Mobile View: Native time picker (unchanged) */}
+                {/* Mobile View: Native time picker */}
                 <input
                   id="target-time-input-mobile"
                   type="time"
@@ -529,7 +492,7 @@ export function TargetTimePicker({
                   aria-label="Target Time"
                 />
 
-                {/* Desktop View: Direct writable input for desired time */}
+                {/* Desktop View: Direct writable input */}
                 <input
                   id="target-time-input-desktop"
                   type="text"
@@ -549,9 +512,9 @@ export function TargetTimePicker({
               {/* Date Button with native date picker */}
               <div
                 onClick={handleOpenDatePicker}
-                className="relative border-l border-slate-300 dark:border-slate-700 flex-shrink-0 cursor-pointer"
+                className="relative border-l border-black/5 dark:border-white/10 flex-shrink-0 cursor-pointer"
               >
-                <div className="flex items-center gap-1.5 px-2.5 py-2 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors select-none">
+                <div className="flex items-center gap-1.5 px-3 py-2 bg-black/5 dark:bg-white/5 text-slate-800 dark:text-slate-200 text-xs font-semibold hover:bg-black/10 dark:hover:bg-white/10 transition-colors select-none">
                   <Calendar className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                   <span>{dateLabel}</span>
                   <ChevronDown className="w-3 h-3 text-slate-500 dark:text-slate-400" />
@@ -578,22 +541,22 @@ export function TargetTimePicker({
             </div>
 
             {/* Desktop Helper Hint */}
-            <div className="hidden sm:flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 px-0.5">
+            <div className="hidden sm:flex items-center justify-between text-[10px] text-slate-400 dark:text-slate-500 px-1">
               <span>Write time (e.g. 2:30 PM, 14:30)</span>
               <span>↵ Enter to apply</span>
             </div>
           </div>
 
           {/* Quick presets from now */}
-          <div className="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
-              Quick Presets from Now:
+          <div className="space-y-1.5 pt-2 border-t border-black/5 dark:border-white/10">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 block px-0.5">
+              Quick Presets
             </span>
-            <div className="grid grid-cols-3 gap-1.5 font-mono">
+            <div className="grid grid-cols-3 gap-1.5 font-mono text-xs">
               <button
                 type="button"
                 onClick={() => setQuickOffset(5 * 60)}
-                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
+                className="py-1.5 px-2 text-center rounded-lg bg-black/5 dark:bg-white/5 hover:bg-indigo-500/10 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-black/5 dark:border-white/5 transition-all cursor-pointer select-none apple-press"
                 title="Add 5 minutes to current time (+5min)"
               >
                 +5min
@@ -601,7 +564,7 @@ export function TargetTimePicker({
               <button
                 type="button"
                 onClick={() => setQuickOffset(15 * 60)}
-                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
+                className="py-1.5 px-2 text-center rounded-lg bg-black/5 dark:bg-white/5 hover:bg-indigo-500/10 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-black/5 dark:border-white/5 transition-all cursor-pointer select-none apple-press"
                 title="Add 15 minutes to current time (+15min)"
               >
                 +15min
@@ -609,7 +572,7 @@ export function TargetTimePicker({
               <button
                 type="button"
                 onClick={() => setQuickOffset(30 * 60)}
-                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-800 transition-colors cursor-pointer select-none active:scale-95"
+                className="py-1.5 px-2 text-center rounded-lg bg-black/5 dark:bg-white/5 hover:bg-indigo-500/10 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 border border-black/5 dark:border-white/5 transition-all cursor-pointer select-none apple-press"
                 title="Add 30 minutes to current time (+30min)"
               >
                 +30min
@@ -617,7 +580,7 @@ export function TargetTimePicker({
               <button
                 type="button"
                 onClick={() => setQuickOffset(-5 * 60)}
-                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 hover:border-red-300 dark:hover:border-red-700 transition-colors cursor-pointer select-none active:scale-95"
+                className="py-1.5 px-2 text-center rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 transition-all cursor-pointer select-none apple-press"
                 title="Set target to 5 minutes ago (-5min overtime)"
               >
                 -5min
@@ -625,7 +588,7 @@ export function TargetTimePicker({
               <button
                 type="button"
                 onClick={() => setQuickOffset(-15 * 60)}
-                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 hover:border-red-300 dark:hover:border-red-700 transition-colors cursor-pointer select-none active:scale-95"
+                className="py-1.5 px-2 text-center rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 transition-all cursor-pointer select-none apple-press"
                 title="Set target to 15 minutes ago (-15min overtime)"
               >
                 -15min
@@ -633,7 +596,7 @@ export function TargetTimePicker({
               <button
                 type="button"
                 onClick={() => setQuickOffset(-30 * 60)}
-                className="py-1.5 px-2 text-center text-xs font-semibold rounded-md bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/60 hover:border-red-300 dark:hover:border-red-700 transition-colors cursor-pointer select-none active:scale-95"
+                className="py-1.5 px-2 text-center rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 transition-all cursor-pointer select-none apple-press"
                 title="Set target to 30 minutes ago (-30min overtime)"
               >
                 -30min

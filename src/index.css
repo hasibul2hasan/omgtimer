@@ -4,22 +4,113 @@
 
 @layer base {
   :root {
-    --bg-primary: #f1f5f9;
-    --card-bg: #ffffff;
-    --border-color: #cbd5e1;
-    --text-primary: #0f172a;
-    --text-muted: #475569;
+    --bg-primary: #f5f5f7;
+    --card-bg: rgba(255, 255, 255, 0.78);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --text-primary: #1d1d1f;
+    --text-muted: #86868b;
+    --apple-blue: #0071e3;
+    --apple-indigo: #5856d6;
+    --apple-red: #ff3b30;
+    --apple-orange: #ff9500;
+    --apple-green: #34c759;
     color-scheme: light;
   }
 
   .dark {
-    --bg-primary: #020617;
-    --card-bg: #0f172a;
-    --border-color: #1e293b;
-    --text-primary: #f8fafc;
-    --text-muted: #94a3b8;
+    --bg-primary: #000000;
+    --card-bg: rgba(28, 28, 30, 0.75);
+    --border-color: rgba(255, 255, 255, 0.12);
+    --text-primary: #f5f5f7;
+    --text-muted: #86868b;
+    --apple-blue: #2997ff;
+    --apple-indigo: #5e5ce6;
+    --apple-red: #ff453a;
+    --apple-orange: #ff9f0a;
+    --apple-green: #30d158;
     color-scheme: dark;
   }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Apple Instant Touch/Pointer Response (SKILL.md §1 & §4) */
+.apple-press {
+  transition: transform 120ms cubic-bezier(0.32, 0.72, 0, 1), opacity 120ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.apple-press:active {
+  transform: scale(0.965);
+}
+
+.apple-press-sm:active {
+  transform: scale(0.94);
+}
+
+/* Apple Materials & Depth: Translucency & Specular Highlights (SKILL.md §12) */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+}
+
+.dark .apple-glass {
+  background: rgba(28, 28, 30, 0.7);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.16);
+}
+
+.apple-glass-heavy {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
+}
+
+.dark .apple-glass-heavy {
+  background: rgba(22, 22, 24, 0.84);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+.apple-glass-subtle {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark .apple-glass-subtle {
+  background: rgba(38, 38, 42, 0.5);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Backward compatible glass-panel mapped to apple-glass */
+.glass-panel {
+  background: var(--card-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
 }
 
 .dark input[type="date"],
@@ -28,35 +119,62 @@
   color-scheme: dark;
 }
 
-
-/* Crisp card styling with high visibility in both light and dark mode */
-.glass-panel {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08);
+/* Apple Display Typography & Tabular Figures (SKILL.md §15) */
+.tabular-nums {
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Overtime dynamic glow effects */
-.overtime-glow {
-  text-shadow: 0 0 35px rgba(239, 68, 68, 0.5), 0 0 70px rgba(239, 68, 68, 0.25);
+.display-numeral {
+  letter-spacing: -0.03em;
+  font-feature-settings: "tnum" 1;
 }
 
-.normal-glow {
-  text-shadow: 0 0 25px rgba(99, 102, 241, 0.35);
+/* Ambient Overtime Illumination */
+.overtime-ambient-glow {
+  box-shadow: 0 0 60px -10px rgba(255, 69, 58, 0.25), inset 0 0 20px 0 rgba(255, 69, 58, 0.1);
 }
 
-/* Custom scrollbar */
+.dark .overtime-ambient-glow {
+  box-shadow: 0 0 80px -10px rgba(255, 69, 58, 0.35), inset 0 0 25px 0 rgba(255, 69, 58, 0.15);
+}
+
+/* Custom Minimal Apple Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.4);
+  background: rgba(142, 142, 147, 0.3);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
+  background: rgba(142, 142, 147, 0.6);
+}
+
+/* Accessibility & Reduced Motion / Reduced Transparency (SKILL.md §14) */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .apple-press:active, .apple-press-sm:active {
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .apple-glass, .apple-glass-heavy, .apple-glass-subtle, .glass-panel {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #ffffff !important;
+  }
+  .dark .apple-glass, .dark .apple-glass-heavy, .dark .apple-glass-subtle, .dark .glass-panel {
+    background: #1c1c1e !important;
+  }
 }
